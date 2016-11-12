@@ -1,0 +1,7 @@
+{
+    "basedir": ["*", "util/"],
+    "output": "dist/ember.min.js",
+    "level": "SIMPLE_OPTIMIZATIONS",
+    "pattern": "*.js",
+    "wrapper" : "(function(){ %output% }());"
+}

@@ -1,15 +1,17 @@
 /**
+ * Three.JS variable
+ * @external THREE
+ * @see {@link https://threejs.org/}
+ */
+
+
+/**
 * The main class for all Ember games
 * @namespace Ember
 * @method Ember
+* @constructor
 * @param {Object} element - The DOM element that the game will live in
 * @param {Object} params - The options for the game instance
-* @var {Object} element - The DOM element the game lives in
-* @var {String} name - The name of the game
-* @var {bool} quaternions - Whether to use THREE quaternions (true) or not (false:default)
-* @var {Array} scenes  - The game's scenes
-* @var {Ember.Scene} scene  - The currently loaded scene
-* @var {Object} SceneManager  - The {Object} for managing scenes
 * @function begin - Initializes the THREE WebGL contex and creates the THREE objects {Ember.three}
 * @function save - Serializes the game to a JSON string
 * @function load - Deserializes a game from a JSON string
@@ -27,8 +29,16 @@ function Ember (element, params){
     }
 
     var _self = this;
+    /**
+     * The DOM element the game lives in
+     * @type {Object}
+     */
     this.element = element;
 
+    /**
+     * The name of the game
+     * @type {string}
+     */
     this.name = "My New Ember Game";
 
     if(params != undefined)
@@ -41,7 +51,15 @@ function Ember (element, params){
        _this = this;
      }
 
+     /**
+      * All the scenes in the game
+      * @type {?Array<Ember.Scene>}
+      */
      this.scenes = [];
+     /**
+      * The currently loaded scene
+      * @type {Ember.Scene}
+      */
      this.scene = {};
 
      this.SceneManager = new (function(){
@@ -53,22 +71,25 @@ function Ember (element, params){
              if(!isNaN(scene)){
                  this._load(_self.scenes[scene]);
              }else{
-                 _scenes.forEach(function(s){
+                 _self.scenes.forEach(function(s){
                      if(s.name == scene)
                         this._load(_self.scenes[s]);
                  });
              }
          },
-         this._load = function(scene){
-             if(_self.three.scene.children.length > 2){
+         this._load = function(emberscene){
+             _self.scene = emberscene;
+             /*if(_self.three.scene.children.length > 3){
+                 console.log("Clearing previous scene")
                  for( var i = _self.three.scene.children.length ; i >= 2; i--) {
-                     if(_self.scene.children[i] != undefined)
-                        _self.scene.remove(_self.scene.children[i]);
+                     if(_self.three.scene.children[i] != undefined)
+                        _self.three.scene.remove(_self.three.scene.children[i]);
                  }
-             }
-             for(var i = 0; i < scene.objects.length; ++i){
-                 console.log(scene.objects[i]._tmesh());
-                 _self.three.scene.add(scene.objects[i]._tmesh());
+             }*/
+             console.log("Adding " + emberscene.objects.length + " objects from new scene")
+             for(var i = 0; i < emberscene.objects.length; ++i){
+                 console.log(emberscene.objects[i]._tmesh());
+                 _self.three.scene.add(emberscene.objects[i]._tmesh());
              }
          }
          this.add = function(scene){
@@ -79,27 +100,44 @@ function Ember (element, params){
      this.begin = function(){
          _self.three = {};
 
-        var width = _self.element.innerWidth;
-        var height = _self.element.innerHeight;
+        var width = _self.element.offsetWidth;
+        var height = _self.element.offsetHeight;
+
+        if(width == undefined || width == 0 || height == undefined || height == 0){
+            console.error("Width/Height of the game element is 0! ");
+        }
+
+        console.log(width + "/" + height);
 
          var scene = new THREE.Scene();
          _self.three.scene = scene;
          var camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
-         camera.position.z = 20;
+         camera.position.z = 5;
          scene.add(camera);
 
-         scene.add( new THREE.AmbientLight( 0xbbbbbb ) );
+         scene.add( new THREE.AmbientLight( 0xffffff ) );
 
-         var renderer = new THREE.WebGLRenderer();
-        renderer.setSize( width, height );
-        renderer.setPixelRatio( width/height );
-        _self.element.appendChild( renderer.domElement );
-        renderer.domElement.style.width = '100%';
-        renderer.domElement.style.height = '100%';
-        _self.three.renderer = renderer;
+         /*var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+         var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+         var cube = new THREE.Mesh( geometry, material );
+         scene.add( cube );*/
+
+         var renderer = new THREE.WebGLRenderer({ antialias: true });
+//         renderer.setClearColor( 0x000000, 0 );
+         renderer.setPixelRatio( width/height );
+         renderer.setSize( width, height );
+
+         _self.element.appendChild( renderer.domElement );
+         renderer.domElement.style.width = '100%';
+         renderer.domElement.style.height = '100%';
+         _self.three.renderer = renderer;
 
         function render() {
         	requestAnimationFrame( render );
+
+            camera.updateProjectionMatrix();
+
+            renderer.setViewport( 0, 0, width, height );
         	renderer.render( scene, camera );
         }
         render();
@@ -125,18 +163,27 @@ Ember.quaternions = false;
 /**
 * The class for holder a 3 dimensional vector
 * @namespace Ember
-* @method Vector3
-* @param {float} newX - The X position for the Vector
-* @param {float} newY - The Y position for the Vector
-* @param {float} newZ - The Z position for the Vector
-* @var {float} x - The x (left/right) position of the object
-* @var {float} y - The y (up/down) position of the object
-* @var {float} z - The z (forward/back) position of the object
+* @constructor
+* @param {number|undefined} newX - The X position for the Vector
+* @param {number|undefined} newY - The Y position for the Vector
+* @param {number|undefined} newZ - The Z position for the Vector
 * @function set - Sets new x, y, and z coordinates for the {Ember.Vector3}
 */
 Ember.Vector3 = function(newX, newY, newZ){
+    /**
+     * The x (left/right) position of the object
+     * @type {number}
+     */
     this.x = 0;
+    /**
+     * The y (up/down) position of the object
+     * @type {number}
+     */
     this.y = 0;
+    /**
+     * he z (forward/back) position of the object
+     * @type {number}
+     */
     this.z = 0;
 
     if(newX != undefined && newY != undefined && newZ != undefined){
@@ -155,57 +202,121 @@ Ember.Vector3 = function(newX, newY, newZ){
             this.y = newY;
             this.z = newZ;
         }
-
         return this;
     }
 }
+
+
+Ember.Color = function(nr, ng, nb, na){
+
+    this.r = 255;
+    this.g = 86;
+    this.b = 0;
+    this.a = 1;
+
+    if(nr != undefined && ng != undefined && nb != undefined && na != undefined){
+        this.r = nr;
+        this.g = ng;
+        this.b = nb;
+        this.a = na;
+    }else if (nr != undefined && ng != undefined && nb != undefined ){
+        this.r = nr;
+        this.g = ng;
+        this.b = nb;
+    }else if (nr != undefined){
+        if(Ember.Util.Color != undefined){
+            var rgb = Ember.Util.Color.fromHex(nr);
+            this.r = rgb.r;
+            this.g = rgb.g;
+            this.b = rgb.b;
+        }else{
+            console.error("Hex input to the Ember.Color constructor is currently not supported due to the color utilities modules not being included")
+        }
+    }
+
+
+
+}
+
 /**
 * The class for all objects in the game's scene
 * @namespace Ember
-* @method GameObject
-* @var {String} name - The name of the gameobject
-* @var {int} layer - The display later the object is a part of
-* @var {Array} tags - A string array of tags to be used for referencing groups of objects later
-* @var {bool} active - Whether the object is in the scene or not
-* @var {THREE.Mesh} mesh - The mesh of the object
-* @var {THREE.Material} material - The material for the object mesh
-* @var {Array} scripts - The scripts that will run on the object when it's active
-* @var {Ember.Vector3} position - The position of the object
-* @var {Ember.Vector3} rotation - The rotation of the object, a {THREE.Quaternion} if the quaternions param is enables in the {Ember} object
-* @var {Ember.Vector3} scale - The size of the object
+* @constructor
 */
 Ember.GameObject = function(){
+    /**
+     * The name of the object
+     * @type {number}
+     */
     this.name = "New GameObject";
+    /**
+     * The render layer the object is on
+     * @type {number}
+     */
     this.layer = 0;
+    /**
+     * The tags the object has, used to find groups of objects
+     * @type {?Array<string>}
+     */
     this.tags = [];
 
+    /**
+     * Whether the object is enable in the scene of not
+     * @type {boolean}
+     */
     this.active = true;
 
+    /**
+     * The THREE.Mesh for the object
+     * @type {THREE.Mesh}
+     */
     this.mesh = {};
+    /**
+     * The THREE.Material for the object
+     * @type {THREE.Material}
+     */
     this.material = {};
+    /**
+     * The scripts for the object that will run when the object is active and in the scene
+     * @type {?Array<string>}
+     */
     this.scripts = [];
 
     this._tmesh = function(){
         return new THREE.Mesh(this.mesh, this.material)
     };
 
+    /**
+     * The position of the object
+     * @type {Ember.Vector3}
+     */
     this.position = new Ember.Vector3();
     if(Ember.quaternions)
         this.rotation = new Ember.Vector3();
     else
         this.rotation = new THREE.Quaternion();
+    /**
+     * The size of the object
+     * @type {Ember.Vector3}
+     */
     this.scale = new Ember.Vector3();
 
 }
 /**
 * The class for all scenes in the game
 * @namespace Ember
-* @method Scene
-* @var {String} name - The name of the scene
-* @var {Array} objects - The {Ember.GameObject}s in the scene
+* @constructor
 */
 Ember.Scene = function(){
+    /**
+     * The name of the scene - used when loading the scene
+     * @type {string}
+     */
     this.name = "New Scene";
+    /**
+     * The {Ember.GameObject} in the scene
+     * @type {?Array<Ember.GameObject>}
+     */
     this.objects = [];
 
     this.add = function(go){

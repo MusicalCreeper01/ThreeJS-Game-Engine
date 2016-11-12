@@ -1,0 +1,21 @@
+{
+  "name": "ember-framework",
+  "description": "A game engine framework based around Three.js and Famous",
+  "main": "ember.js",
+  "authors": [
+    "Keith Mitchell <keith.mitchell@live.ca> (http://keithcod.es)"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/MusicalCreeper01/Ember",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+      "closure-compiler": "http://dl.google.com/closure-compiler/compiler-latest.zip"
+    }
+}
