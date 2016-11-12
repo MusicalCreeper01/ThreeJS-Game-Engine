@@ -35,8 +35,6 @@ function Ember (element, params){
         if(params.save)
             for (var prop in params) this[prop] = params[prop];
 
-    this.quaternions = params != undefined && params.quaternions != undefined ? params.quaternions : false;
-
     /*http://stackoverflow.com/questions/8624590/accessing-instance-variable-from-parent-function*/
     var _this;
     this.super = function(){
@@ -52,7 +50,7 @@ function Ember (element, params){
                  console.error("Three.js is not initialized, call Ember.begin() before loading scenes");
                  return;
              }
-             if(!isNan(scene)){
+             if(!isNaN(scene)){
                  this._load(_self.scenes[scene]);
              }else{
                  _scenes.forEach(function(s){
@@ -62,8 +60,15 @@ function Ember (element, params){
              }
          },
          this._load = function(scene){
-             for( var i = _self.three.scene.children.length - 1; i >= 0; i--) {
-                 _self.scene.remove(_self.scene.children[i]);
+             if(_self.three.scene.children.length > 2){
+                 for( var i = _self.three.scene.children.length ; i >= 2; i--) {
+                     if(_self.scene.children[i] != undefined)
+                        _self.scene.remove(_self.scene.children[i]);
+                 }
+             }
+             for(var i = 0; i < scene.objects.length; ++i){
+                 console.log(scene.objects[i]._tmesh());
+                 _self.three.scene.add(scene.objects[i]._tmesh());
              }
          }
          this.add = function(scene){
@@ -80,12 +85,17 @@ function Ember (element, params){
          var scene = new THREE.Scene();
          _self.three.scene = scene;
          var camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
+         camera.position.z = 20;
          scene.add(camera);
+
+         scene.add( new THREE.AmbientLight( 0xbbbbbb ) );
 
          var renderer = new THREE.WebGLRenderer();
         renderer.setSize( width, height );
         renderer.setPixelRatio( width/height );
         _self.element.appendChild( renderer.domElement );
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
         _self.three.renderer = renderer;
 
         function render() {
@@ -109,6 +119,9 @@ function Ember (element, params){
      }
 
 }
+
+Ember.quaternions = false;
+
 /**
 * The class for holder a 3 dimensional vector
 * @namespace Ember
@@ -172,14 +185,17 @@ Ember.GameObject = function(){
     this.material = {};
     this.scripts = [];
 
-    this.super();
+    this._tmesh = function(){
+        return new THREE.Mesh(this.mesh, this.material)
+    };
 
-    this.position = new Vector3();
-    if(this.quaternions)
-        this.rotation = new Vector3();
+    this.position = new Ember.Vector3();
+    if(Ember.quaternions)
+        this.rotation = new Ember.Vector3();
     else
         this.rotation = new THREE.Quaternion();
-    this.scale = new Vector3();
+    this.scale = new Ember.Vector3();
+
 }
 /**
 * The class for all scenes in the game
@@ -191,5 +207,9 @@ Ember.GameObject = function(){
 Ember.Scene = function(){
     this.name = "New Scene";
     this.objects = [];
+
+    this.add = function(go){
+        this.objects.push(go);
+    }
 
 }
