@@ -94,8 +94,8 @@ function Ember (element, params){
                  }
              }
 
+             /* Add new objects to the THREE scene as their added to the Ember scene */
              _self.scene.Events.ObjectAdded.push(function(go){
-                 console.log("Added object to scene");
                  _self.three.scene.add(go._tmesh());
              })
          }
@@ -316,8 +316,8 @@ Ember.GameObject = function(){
 
 Ember.GameObject.Box = function(){
     var go = new Ember.GameObject();
-    go.mesh = new THREE.BoxGeometry();
-    go.material = new THREE.MeshBasicMaterial();
+    go.mesh = new THREE.BoxGeometry(2, 2, 2);
+    go.material = new THREE.MeshPhongMaterial();
     return go;
 }
 

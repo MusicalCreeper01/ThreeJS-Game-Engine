@@ -5,7 +5,8 @@
   "main": "ember.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp && ./node_modules/.bin/jsdoc ember.js"
+    "build": "gulp && ./node_modules/.bin/jsdoc ember.js",
+    "docs": "./node_modules/.bin/jsdoc ember.js util/util.js util/color.js"
   },
   "author": "Keith Mitchell <keith.mitchell@live.ca> (http://keithcod.es)",
   "license": "MIT",
