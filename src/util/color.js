@@ -1,3 +1,8 @@
+/**
+* Handles color conversions and manipulation
+* @constructor
+* @memberof Ember.Util
+*/
 Ember.Util.Color = {
     fromHex: function(hex){
         return hexToRgb(hex);

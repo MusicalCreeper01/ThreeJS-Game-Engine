@@ -16,7 +16,6 @@ function Ember (element, params){
 
     if(THREE == undefined){
         console.error("Three.js isn't loaded!");
-
         return {};
     }else{
         if(THREE.REVISION < 82){
@@ -75,19 +74,30 @@ function Ember (element, params){
              }
          },
          this._load = function(emberscene){
+             if(_self.scene != undefined && _self.scene.Events != undefined)
+                _self.scene.Events.ObjectAdded = [];
+
              _self.scene = emberscene;
-             /*if(_self.three.scene.children.length > 3){
+
+             if(_self.three.scene.children.length > 2){
                  console.log("Clearing previous scene")
                  for( var i = _self.three.scene.children.length ; i >= 2; i--) {
                      if(_self.three.scene.children[i] != undefined)
                         _self.three.scene.remove(_self.three.scene.children[i]);
                  }
-             }*/
-             console.log("Adding " + emberscene.objects.length + " objects from new scene")
-             for(var i = 0; i < emberscene.objects.length; ++i){
-                 console.log(emberscene.objects[i]._tmesh());
-                 _self.three.scene.add(emberscene.objects[i]._tmesh());
              }
+             if(emberscene.objects != undefined){
+                 console.log("Adding " + emberscene.objects.length + " objects from new scene")
+                 for(var i = 0; i < emberscene.objects.length; ++i){
+                     console.log(emberscene.objects[i]._tmesh());
+                     _self.three.scene.add(emberscene.objects[i]._tmesh());
+                 }
+             }
+
+             _self.scene.Events.ObjectAdded.push(function(go){
+                 console.log("Added object to scene");
+                 _self.three.scene.add(go._tmesh());
+             })
          }
          this.add = function(scene){
              _self.scenes.push(scene);
@@ -303,6 +313,14 @@ Ember.GameObject = function(){
     this.scale = new Ember.Vector3();
 
 }
+
+Ember.GameObject.Box = function(){
+    var go = new Ember.GameObject();
+    go.mesh = new THREE.BoxGeometry();
+    go.material = new THREE.MeshBasicMaterial();
+    return go;
+}
+
 /**
 * The class for all scenes in the game
 * @constructor
@@ -319,8 +337,14 @@ Ember.Scene = function(){
      */
     this.objects = [];
 
+    this.Events = {};
+    this.Events.ObjectAdded = [];
+
     this.add = function(go){
         this.objects.push(go);
+        this.Events.ObjectAdded.forEach(function(callback){
+            callback(go);
+        });
     }
 
 }
