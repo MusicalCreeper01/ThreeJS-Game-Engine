@@ -1,5 +1,5 @@
 /**
-* This is a description
+* The main class for all Ember games
 * @namespace Ember
 * @method Ember
 * @param {Object} element - The DOM element that the game will live in
@@ -10,7 +10,7 @@
 * @var {Array} scenes  - The game's scenes
 * @var {Ember.Scene} scene  - The currently loaded scene
 * @var {Object} SceneManager  - The {Object} for managing scenes
-* @function start - Initializes the THREE WebGL contex and creates the THREE objects {Ember.three}
+* @function begin - Initializes the THREE WebGL contex and creates the THREE objects {Ember.three}
 * @function save - Serializes the game to a JSON string
 * @function load - Deserializes a game from a JSON string
 */
@@ -46,7 +46,7 @@ function Ember (element, params){
      this.scenes = [];
      this.scene = {};
 
-     this.SceneManager = function(){
+     this.SceneManager = new (function(){
          this.load = function(scene){
              if(_self.three == undefined){
                  console.error("Three.js is not initialized, call Ember.begin() before loading scenes");
@@ -62,16 +62,20 @@ function Ember (element, params){
              }
          },
          this._load = function(scene){
-             for( var i = _this.three.scene.children.length - 1; i >= 0; i--) {
-                 _this.scene.remove(_this.scene.children[i]);
+             for( var i = _self.three.scene.children.length - 1; i >= 0; i--) {
+                 _self.scene.remove(_self.scene.children[i]);
              }
          }
-     };
+         this.add = function(scene){
+             _self.scenes.push(scene);
+         }
+     });
 
-     this.start = function(){
+     this.begin = function(){
+         _self.three = {};
 
-        var width = _this.element.innerWidth;
-        var height = _this.element.innerHeight;
+        var width = _self.element.innerWidth;
+        var height = _self.element.innerHeight;
 
          var scene = new THREE.Scene();
          _self.three.scene = scene;
@@ -106,7 +110,7 @@ function Ember (element, params){
 
 }
 /**
-* This is a description
+* The class for holder a 3 dimensional vector
 * @namespace Ember
 * @method Vector3
 * @param {float} newX - The X position for the Vector
@@ -117,7 +121,7 @@ function Ember (element, params){
 * @var {float} z - The z (forward/back) position of the object
 * @function set - Sets new x, y, and z coordinates for the {Ember.Vector3}
 */
-Ember.prototype.Vector3 = function(newX, newY, newZ){
+Ember.Vector3 = function(newX, newY, newZ){
     this.x = 0;
     this.y = 0;
     this.z = 0;
@@ -157,7 +161,7 @@ Ember.prototype.Vector3 = function(newX, newY, newZ){
 * @var {Ember.Vector3} rotation - The rotation of the object, a {THREE.Quaternion} if the quaternions param is enables in the {Ember} object
 * @var {Ember.Vector3} scale - The size of the object
 */
-Ember.prototype.GameObject = function(){
+Ember.GameObject = function(){
     this.name = "New GameObject";
     this.layer = 0;
     this.tags = [];
@@ -184,7 +188,7 @@ Ember.prototype.GameObject = function(){
 * @var {String} name - The name of the scene
 * @var {Array} objects - The {Ember.GameObject}s in the scene
 */
-Ember.prototype.Scene = function(){
+Ember.Scene = function(){
     this.name = "New Scene";
     this.objects = [];
 
