@@ -7,14 +7,10 @@
 
 /**
 * The main class for all Ember games
-* @namespace Ember
-* @method Ember
 * @constructor
+* @class
 * @param {Object} element - The DOM element that the game will live in
 * @param {Object} params - The options for the game instance
-* @function begin - Initializes the THREE WebGL contex and creates the THREE objects {Ember.three}
-* @function save - Serializes the game to a JSON string
-* @function load - Deserializes a game from a JSON string
 */
 function Ember (element, params){
 
@@ -29,6 +25,7 @@ function Ember (element, params){
     }
 
     var _self = this;
+
     /**
      * The DOM element the game lives in
      * @type {Object}
@@ -162,12 +159,10 @@ Ember.quaternions = false;
 
 /**
 * The class for holder a 3 dimensional vector
-* @namespace Ember
 * @constructor
 * @param {number|undefined} newX - The X position for the Vector
 * @param {number|undefined} newY - The Y position for the Vector
 * @param {number|undefined} newZ - The Z position for the Vector
-* @function set - Sets new x, y, and z coordinates for the {Ember.Vector3}
 */
 Ember.Vector3 = function(newX, newY, newZ){
     /**
@@ -195,6 +190,13 @@ Ember.Vector3 = function(newX, newY, newZ){
         this.y = newX;
         this.z = newX;
     }
+
+    /**
+     * Sets the x, y, and z position of the vector in 3 dimensional space
+     * @param {number|undefined} newX - The X position for the Vector
+     * @param {number|undefined} newY - The Y position for the Vector
+     * @param {number|undefined} newZ - The Z position for the Vector
+     */
 
     this.set = function(newX, newY, newZ){
         if(newX != undefined && newY != undefined && newZ != undefined){
@@ -240,7 +242,6 @@ Ember.Color = function(nr, ng, nb, na){
 
 /**
 * The class for all objects in the game's scene
-* @namespace Ember
 * @constructor
 */
 Ember.GameObject = function(){
@@ -304,7 +305,6 @@ Ember.GameObject = function(){
 }
 /**
 * The class for all scenes in the game
-* @namespace Ember
 * @constructor
 */
 Ember.Scene = function(){
