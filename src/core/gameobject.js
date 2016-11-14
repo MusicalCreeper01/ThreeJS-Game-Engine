@@ -88,3 +88,44 @@ Ember.GameObject.Box = function(sizex, sizey, sizez){
     go.material = new THREE.MeshPhongMaterial();
     return go;
 }
+
+/**
+* Contructor for easily creating a primitive {Ember.GameObject} with a circle mesh and a Phong material
+* @constructor
+* @param {number|number|undefined} radius - The outter radius of the circle
+* @param {number|undefined} segments - The segments that form the circle
+* @return {Enber.GameObject}
+*/
+Ember.GameObject.Circle = function(radius, segments){
+    var go = new Ember.GameObject();
+    if(radius != undefined && segments != undefined)
+        go.mesh = new THREE.CircleGeometry(radius, segments);
+    else if(radius != undefined)
+        go.mesh = new THREE.CircleGeometry(radius);
+    else
+        go.mesh = new THREE.CircleGeometry(5,32);
+
+    go.material = new THREE.MeshPhongMaterial();
+    return go;
+}
+
+/**
+* Contructor for easily creating a primitive {Ember.GameObject} with a sphere mesh and a Phong material
+* @constructor
+* @param {number|number|undefined} radius - The outter radius of the sphere
+* @param {number|undefined} widthsegments - The segments that form the sphere width
+* @param {number|undefined} heightsegments - The segments that form the sphere height
+* @return {Enber.GameObject}
+*/
+Ember.GameObject.Sphere = function(radius, widthsegments, heightsegments){
+    var go = new Ember.GameObject();
+    if(radius != undefined && widthsegments != undefined && heightsegments != undefined)
+        go.mesh = new THREE.SphereGeometry(radius, widthsegments, heightsegments);
+    else if(radius != undefined)
+        go.mesh = new THREE.SphereGeometry(radius);
+    else
+        go.mesh = new THREE.SphereGeometry(5, 32, 32);
+
+    go.material = new THREE.MeshPhongMaterial();
+    return go;
+}
