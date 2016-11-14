@@ -94,7 +94,7 @@ Ember.GameObject.Box = function(sizex, sizey, sizez){
 * @constructor
 * @param {number|number|undefined} radius - The outter radius of the circle
 * @param {number|undefined} segments - The segments that form the circle
-* @return {Enber.GameObject}
+* @return {Ember.GameObject}
 */
 Ember.GameObject.Circle = function(radius, segments){
     var go = new Ember.GameObject();
@@ -115,7 +115,7 @@ Ember.GameObject.Circle = function(radius, segments){
 * @param {number|number|undefined} radius - The outter radius of the sphere
 * @param {number|undefined} widthsegments - The segments that form the sphere width
 * @param {number|undefined} heightsegments - The segments that form the sphere height
-* @return {Enber.GameObject}
+* @return {Ember.GameObject}
 */
 Ember.GameObject.Sphere = function(radius, widthsegments, heightsegments){
     var go = new Ember.GameObject();
@@ -125,6 +125,26 @@ Ember.GameObject.Sphere = function(radius, widthsegments, heightsegments){
         go.mesh = new THREE.SphereGeometry(radius);
     else
         go.mesh = new THREE.SphereGeometry(5, 32, 32);
+
+    go.material = new THREE.MeshPhongMaterial();
+    return go;
+}
+
+/**
+* Contructor for easily creating a {Ember.GameObject} with a mesh made front text
+* @constructor
+* @param {string|string|undefined} text - The text to use to make the mesh
+* @param {Object|undefined} parameters - The THREE.TextGeometry parameters
+* @return {Ember.GameObject}
+*/
+Ember.GameObject.Sphere = function(text, parameters){
+    var go = new Ember.GameObject();
+    if(text != undefined && parameters != undefined)
+        go.mesh = new THREE.TextGeometry(text, parameters);
+    else if(radius != undefined)
+        go.mesh = new THREE.TextGeometry(text);
+    else
+        go.mesh = new THREE.TextGeometry("This is some text!");
 
     go.material = new THREE.MeshPhongMaterial();
     return go;
