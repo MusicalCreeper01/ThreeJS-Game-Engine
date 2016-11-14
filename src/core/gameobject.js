@@ -139,12 +139,19 @@ Ember.GameObject.Sphere = function(radius, widthsegments, heightsegments){
 */
 Ember.GameObject.Text = function(text, parameters){
     var go = new Ember.GameObject();
-    if(text != undefined && parameters != undefined)
+
+    if(text != undefined && parameters != undefined){
         go.mesh = new THREE.TextGeometry(text, parameters);
-    else if(radius != undefined)
-        go.mesh = new THREE.TextGeometry(text);
-    else
+    } else if(text != undefined) {
+        let font = new THREE.Font(JSON.parse(opensans .substring(65, opensans .length - 2)));
+        go.mesh = new THREE.TextGeometry(text, {
+            font: font,
+            size: 5,
+            height: 5
+        });
+    } else {
         go.mesh = new THREE.TextGeometry("This is some text!");
+    }
 
     go.material = new THREE.MeshPhongMaterial();
     return go;

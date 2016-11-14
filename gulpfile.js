@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var closureCompiler = require('gulp-closure-compiler');
 
 var paths = [
+    'src/resources/*.js',
     'src/externs/*.js',
     'src/ember.js',
     'src/core/*.js',

@@ -122,6 +122,8 @@ function Ember (element, params){
          camera.position.z = 5;
          scene.add(camera);
 
+         _self.three.camera = camera;
+
          var ambient = new THREE.AmbientLight( 0x444 );
          console.log(ambient);
 
