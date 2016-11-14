@@ -7,7 +7,10 @@ var paths = [
     'src/ember.js',
     'src/core/*.js',
     'src/util/util.js', // Includes the Ember.Util object - want to include before other utils
-    'src/util/*.js'
+    'src/util/*.js',
+    'src/ui/ember.ui.js',
+    'src/ui/element.js',
+    'src/ui/*.js'
 ]
 
 gulp.task('default', function() {

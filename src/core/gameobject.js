@@ -150,7 +150,11 @@ Ember.GameObject.Text = function(text, parameters){
             height: 5
         });
     } else {
-        go.mesh = new THREE.TextGeometry("This is some text!");
+        go.mesh = new THREE.TextGeometry("This is some text!", {
+            font: font,
+            size: 5,
+            height: 5
+        });
     }
 
     go.material = new THREE.MeshPhongMaterial();

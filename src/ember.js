@@ -4,7 +4,6 @@
  * @see {@link https://threejs.org/}
  */
 
-
 /**
 * The main class for all Ember games
 * @constructor
@@ -136,12 +135,17 @@ function Ember (element, params){
 
          var renderer = new THREE.WebGLRenderer({ antialias: true });
 //         renderer.setClearColor( 0x000000, 0 );
-         renderer.setPixelRatio( width/height );
+         //renderer.setPixelRatio( width/height );
          renderer.setSize( width, height );
 
          _self.element.appendChild( renderer.domElement );
-         renderer.domElement.style.width = '100%';
-         renderer.domElement.style.height = '100%';
+         renderer.domElement.style.position = "absolute";
+         renderer.domElement.style.top = '0';
+         renderer.domElement.style.bottom = '0';
+         renderer.domElement.style.left = '0';
+         renderer.domElement.style.right = '0';
+         /*renderer.domElement.style.width = '100%';
+         renderer.domElement.style.height = '100%';*/
          _self.three.renderer = renderer;
 
          _self.renderer = {
@@ -149,6 +153,20 @@ function Ember (element, params){
              ambient: ambient,
              WebGLRenderer: renderer
          }
+
+         window.addEventListener( 'resize', onWindowResize, false );
+
+         function onWindowResize(){
+
+             width = _self.element.offsetWidth;
+             height = _self.element.offsetHeight;
+
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize( width, height);
+
+        }
 
         function render() {
         	requestAnimationFrame( render );
