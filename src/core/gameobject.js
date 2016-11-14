@@ -137,7 +137,7 @@ Ember.GameObject.Sphere = function(radius, widthsegments, heightsegments){
 * @param {Object|undefined} parameters - The THREE.TextGeometry parameters
 * @return {Ember.GameObject}
 */
-Ember.GameObject.Sphere = function(text, parameters){
+Ember.GameObject.Text = function(text, parameters){
     var go = new Ember.GameObject();
     if(text != undefined && parameters != undefined)
         go.mesh = new THREE.TextGeometry(text, parameters);
