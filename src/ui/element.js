@@ -7,6 +7,11 @@
 
 */
 
+/**
+* Base for all UI elements
+* @constructor
+* @memberof {Ember.UI}
+*/
 Ember.UI.Element = function (){
     var _self = this;
 

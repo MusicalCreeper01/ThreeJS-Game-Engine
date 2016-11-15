@@ -1,4 +1,8 @@
-
+/**
+* Handles creating a ui layer for the game
+* @constructor
+* @memberof Ember
+*/
 Ember.UI = function(ember){
     if(ember == undefined){
         console.error("Ember.UI must be passed an instance of Ember");
@@ -35,6 +39,31 @@ Ember.UI = function(ember){
           }
         });
         _self.famous.context.add(surface)
+        panel.famous = {
+            surface: surface
+        };
+        panel.remove = function(){
+            return _self.removePanel(panel);
+        }
+        return panel;
+    }
+
+    this.removePanel = function(panel){
+        if(panel.famous.surface == undefined){
+            console.error("To remove a panel from a UI you nede to pass the panel object returned from the add call");
+            return undefined;
+        }
+        panel.famous.surface.render = function(){
+            return null;
+        }
+        delete panel.famous;
+
+        var index = _self.panels.indexOf(panel);
+        if (index > -1) {
+            _self.panels.splice(index, 1);
+        }
+
+        return panel;
     }
 
     this.draw = function(){
